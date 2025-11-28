@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista_Zakupow</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            cursor: pointer;
+            background-color: lightcyan;
+            margin: 5px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        li.active {
+            background-color: lightgreen;
+        }
+    </style>
+</head>
+<body>
+    <h2>Lista zakupów</h2>
+
+    <input type="text" id="productInput" placeholder="Wpisz produkt">
+    <button id="but1">DODAJ PRODUKT</button>
+    <button id="but2">USUŃ OSTATNI PRODUKT</button>
+    <button id="na_po">Dodaj na początku</button>
+    <button id="wycz">Wyczyść listę</button>
+    <button id="pokoloruj">Pokoloruj co drugi element</button>
+    <button id="sortuj">Sortuj alfabetycznie</button>
+
+    <input type="text" id="filterInput" placeholder="Filtruj listę">
+
+    <ul id="shoppingList"></ul>
+
+    <script>
+        $(document).ready(function() {
+
+            // Zadanie 1
+            $("#but2").click(function() {
+                $('li:last-child').remove();
+            });
+
+            // Zadanie 2
+            $("#shoppingList").on("click", "li", function() {
+                var currentText = $(this).text();
+                var input = $("<input>").val(currentText);
+
+                $(this).fadeOut(function() {
+                    $(this).replaceWith(input);
+                    input.focus();
+                });
+
+                input.on("keypress", function(e) {
+                    if (e.which === 13) {
+                        var newText = input.val();
+                        var li = $("<li>").text(newText).addClass("list-group-item");
+
+                        input.fadeOut(function() {
+                            $(this).replaceWith(li);
+                            li.fadeIn();
+                        });
+                    }
+                });
+            });
+
+            // Zadanie 3
+            $("#na_po").click(function() {
+                var product = $("#productInput").val();
+                if (product) {
+                    $('#shoppingList').prepend("<li class='list-group-item'>" + product + "</li>");
+                    $("#productInput").val("");
+                }
+            });
+
+            // Zadanie 4
+            $("#but1").click(function() {
+                var product = $("#productInput").val();
+                if (product) {
+                    $('#shoppingList').append("<li class='list-group-item'>" + product + "</li>");
+                    $("#productInput").val("");
+                }
+            });
+
+            // Zadanie 5
+
+            $("wycz").click(function(){
+                $("#shoppingList").empty();
+            })
+
+            // Zadanie 5
+            $("#shoppingList").on("click", "li", function() {
+                $(this).toggleClass("active");
+            });
+
+            // Zadanie 6
+            $("#pokoloruj").click(function() {
+                $("#shoppingList li:even").css("background-color", "#f0f8ff");
+            });
+
+            // Zadanie 7
+            $("#sortuj").click(function() {
+                var items = $("#shoppingList li").get();
+                items.sort(function(a, b) {
+                    return $(a).text().localeCompare($(b).text());
+                });
+                $("#shoppingList").empty().append(items);
+            });
+
+            // Zadanie 8
+            $('#filterInput').on('input', function() {
+                var filterText = $(this).val().toLowerCase();
+                $('#shoppingList li').each(function() {
+                    var itemText = $(this).text().toLowerCase();
+                    if (itemText.indexOf(filterText) === -1) {
+                        $(this).hide();
+                    } else {
+                        $(this).show();
+                    }
+                });
+            });
+
+            // Zadanie 9
+            $("#shoppingList").sortable();
+        });
+    </script>
+</body>
+</html>
